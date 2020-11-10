@@ -1,3 +1,10 @@
-# Project Title 
+# Filter service
 
-Place there all basic information needed for anyone to get started with your repository
+Имя сервиса: `filter`
+
+## API
+### RPC
+Для получения отфильтрованных событий пользователя:
+```
+rpc.filter.get_events(user, tags)
+```
