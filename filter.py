@@ -1,5 +1,6 @@
 from nameko.rpc import rpc, RpcProxy
 
+
 class Filter:
     """Microservice for filtering top events"""
     # Vars
@@ -7,6 +8,7 @@ class Filter:
     name = 'filter'
     top_das_rpc = RpcProxy('top_das')
     event_das_rpc = RpcProxy('event_das')
+    logger_rpc = RpcProxy('logger')
 
     # Logic
 
@@ -26,7 +28,8 @@ class Filter:
         events = list()
         for event_id in top_events:
             events.append(self.event_das_rpc.get_event_by_id(event_id))
-
+        self.logger_rpc.log(self.name, self.get_events.__name__, [user, list(tags)], "Info", "Filtering events")
+        
         filtered_events = list()
         for event in events:
             event_tags = set(event['tags'])
