@@ -18,16 +18,21 @@ class Filter:
     def get_events(self, user, tags):
         """Getting tags, sending filtered events back
         :params:
-            user - user login
+            user - user login or None
             tags - list of tags
         :returns:
             filtered_events - filtered top user's events"""
-        tags = set(tags)
-        top_events = self.top_das_rpc.get_top(user)
 
-        events = list()
-        for event_id in top_events:
-            events.append(self.event_das_rpc.get_event_by_id(event_id))
+        tags = set(tags)
+
+        if user is None:
+            events = self.event_das_rpc.get_events_by_date()
+        else:
+            top_events = self.top_das_rpc.get_top(user)
+
+            events = list()
+            for event_id in top_events:
+                events.append(self.event_das_rpc.get_event_by_id(event_id))
         self.logger_rpc.log(self.name, self.get_events.__name__, [user, list(tags)], "Info", "Filtering events")
         
         filtered_events = list()
