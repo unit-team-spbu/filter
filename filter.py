@@ -34,6 +34,9 @@ class Filter:
             for event_id in top_events:
                 events.append(self.event_das_rpc.get_event_by_id(event_id))
         self.logger_rpc.log(self.name, self.get_events.__name__, [user, list(tags)], "Info", "Filtering events")
+
+        if not len(tags):
+            return events
         
         filtered_events = list()
         for event in events:
