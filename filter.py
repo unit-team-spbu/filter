@@ -38,7 +38,7 @@ class Filter:
         filtered_events = list()
         for event in events:
             event_tags = set(event['tags'])
-            if tags.issubset(event_tags):
+            if len(tags & event_tags):
                 filtered_events.append(event)
 
         return filtered_events
