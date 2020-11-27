@@ -14,7 +14,7 @@ class Filter:
 
     # API
 
-    @rpc 
+    @rpc
     def get_events(self, user, tags):
         """Getting tags, sending filtered events back
         :params:
@@ -33,15 +33,25 @@ class Filter:
             events = list()
             for event_id in top_events:
                 events.append(self.event_das_rpc.get_event_by_id(event_id))
-        self.logger_rpc.log(self.name, self.get_events.__name__, [user, list(tags)], "Info", "Filtering events")
+        self.logger_rpc.log(self.name, self.get_events.__name__, [
+                            user, list(tags)], "Info", "Filtering events")
 
         if not len(tags):
             return events
-        
+
         filtered_events = list()
         for event in events:
             event_tags = set(event['tags'])
             if len(tags & event_tags):
                 filtered_events.append(event)
+
+        # in order to only get events with these tags
+        # if they are presented in filter tags
+        for tag in ['online', 'paid']:
+            if tag in tags:
+                for event in filtered_events:
+                    event_tags = event['tags']
+                    if tag not in event_tags:
+                        filtered_events.remove(event)
 
         return filtered_events
