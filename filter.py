@@ -49,9 +49,6 @@ class Filter:
                             user, list(tags)], "Info", "Filtering events")
 
         if not len(tags):
-            return events
-
-        if not len(tags):
             if is_online or is_paid:
                 filtered_events = events
             else:
