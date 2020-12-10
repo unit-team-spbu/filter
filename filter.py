@@ -23,6 +23,18 @@ class Filter:
         :returns:
             filtered_events - filtered top user's events"""
 
+        if 'online' in tags:
+            is_online = True
+            tags.remove('online')
+        else:
+            is_online = False
+
+        if 'paid' in tags:
+            is_paid = True
+            tags.remove('paid')
+        else:
+            is_paid = False
+
         tags = set(tags)
 
         if user is None:
@@ -39,19 +51,31 @@ class Filter:
         if not len(tags):
             return events
 
-        filtered_events = list()
-        for event in events:
-            event_tags = set(event['tags'])
-            if len(tags & event_tags):
-                filtered_events.append(event)
+        if not len(tags):
+            if is_online or is_paid:
+                filtered_events = events
+            else:
+                return events
+        else:
+            filtered_events = list()
+            for event in events:
+                event_tags = set(event['tags'])
+                if len(tags & event_tags):
+                    filtered_events.append(event)
 
         # in order to only get events with these tags
         # if they are presented in filter tags
-        for tag in ['online', 'paid']:
-            if tag in tags:
-                for event in filtered_events:
-                    event_tags = event['tags']
-                    if tag not in event_tags:
-                        filtered_events.remove(event)
+        if is_online:
+            tmp_filtered_events = filtered_events.copy()
+            for event in tmp_filtered_events:
+                event_tags = event['tags']
+                if 'online' not in event_tags:
+                    filtered_events.remove(event)
+        if is_paid:
+            tmp_filtered_events = filtered_events.copy()
+            for event in tmp_filtered_events:
+                event_tags = event['tags']
+                if 'paid' not in event_tags:
+                    filtered_events.remove(event)
 
         return filtered_events
